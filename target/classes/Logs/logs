@@ -1,0 +1,203 @@
+**********************************************************************
+INFO  2020-12-28 21:04:38,118 [WrapperListener_start_runner] org.mule.runtime.core.internal.logging.LogUtil: 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Mule is up and kicking (every 5000ms)                                        +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+INFO  2020-12-28 21:04:38,126 [WrapperListener_start_runner] org.eclipse.jetty.server.AbstractConnector: Started ServerConnector@72324836{HTTP/1.1,[http/1.1]}{0.0.0.0:55381}
+INFO  2020-12-28 21:04:38,127 [WrapperListener_start_runner] org.mule.runtime.core.internal.logging.LogUtil: 
+**********************************************************************
+*              - - + DOMAIN + - -               * - - + STATUS + - - *
+**********************************************************************
+* default                                       * DEPLOYED           *
+**********************************************************************
+
+*******************************************************************************************************
+*            - - + APPLICATION + - -            *       - - + DOMAIN + - -       * - - + STATUS + - - *
+*******************************************************************************************************
+* plhg-item-to-product-pricebook-v2             * default                        * DEPLOYED           *
+*******************************************************************************************************
+
+INFO  2020-12-28 21:04:38,193 [[MuleRuntime].cpuIntensive.11: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: {mdDate=2020-12-28 20:24:35}
+INFO  2020-12-28 21:04:38,344 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: org.mule.runtime.core.internal.streaming.object.ManagedCursorIteratorProvider@1f998bd1
+INFO  2020-12-28 21:04:38,365 [[MuleRuntime].cpuIntensive.12: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: [
+  {
+    "ShippingWeightUnits": "Tons",
+    "ProductCode": "T43",
+    "ItemType": "Tools",
+    "LastModifiedDate": "2020-12-28T20:50:59",
+    "IsActive": "True",
+    "Name": "Tins",
+    "ShippingWeight": "5",
+    "ReplaceWith": "Tools",
+    "PartDescription": "Tools",
+    "PartNumber": "53"
+  },
+  {
+    "ShippingWeightUnits": "Tons",
+    "ProductCode": "P43",
+    "ItemType": "Pipes",
+    "LastModifiedDate": "2020-12-28T20:54:08",
+    "IsActive": "True",
+    "Name": "SteelPipes",
+    "ShippingWeight": "4",
+    "ReplaceWith": "Pipes",
+    "PartDescription": "Pipes",
+    "PartNumber": "432"
+  },
+  {
+    "ShippingWeightUnits": "Tons",
+    "ProductCode": "B43",
+    "ItemType": "Pipes",
+    "LastModifiedDate": "2020-12-28T20:58:08",
+    "IsActive": "True",
+    "Name": "Bronze",
+    "ShippingWeight": "4",
+    "ReplaceWith": "Pipes",
+    "PartDescription": "Pipes",
+    "PartNumber": "342"
+  },
+  {
+    "ShippingWeightUnits": "Tons",
+    "ProductCode": "tolls",
+    "ItemType": "Tools",
+    "LastModifiedDate": "2020-12-28T21:03:35",
+    "IsActive": "True",
+    "Name": "Nails",
+    "ShippingWeight": "4",
+    "ReplaceWith": "Tools",
+    "PartDescription": "tools",
+    "PartNumber": "4"
+  }
+]
+INFO  2020-12-28 21:04:38,393 [[MuleRuntime].cpuIntensive.12: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: null
+INFO  2020-12-28 21:04:39,995 [[MuleRuntime].cpuIntensive.02: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: ***********Result*******{
+  "ShippingWeightUnits": "Tons",
+  "ProductCode": "T43",
+  "ItemType": "Tools",
+  "LastModifiedDate": "2020-12-28T20:50:59",
+  "IsActive": "True",
+  "Name": "Tins",
+  "ShippingWeight": "5",
+  "ReplaceWith": "Tools",
+  "PartDescription": "Tools",
+  "PartNumber": "53"
+}
+INFO  2020-12-28 21:04:39,999 [[MuleRuntime].cpuIntensive.02: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Product to Upsert: {
+  "ShippingWeightUnits": "Tons",
+  "ProductCode": "T43",
+  "ItemType": "Tools",
+  "LastModifiedDate": "2020-12-28T20:50:59",
+  "IsActive": "True",
+  "Name": "Tins",
+  "ShippingWeight": "5",
+  "ReplaceWith": "Tools",
+  "PartDescription": "Tools",
+  "PartNumber": "53"
+}
+INFO  2020-12-28 21:04:40,014 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] com.github.dozermapper.core.DozerBeanMapperBuilder: Initializing Dozer. Version: 6.4.1, Thread Name: [MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36
+INFO  2020-12-28 21:04:40,015 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] com.github.dozermapper.core.util.RuntimeUtils: OSGi support is false
+INFO  2020-12-28 21:04:40,020 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] com.github.dozermapper.core.config.resolvers.LegacyPropertiesSettingsResolver: Trying to find Dozer configuration file: dozer.properties
+INFO  2020-12-28 21:04:40,022 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] com.github.dozermapper.core.config.resolvers.LegacyPropertiesSettingsResolver: Failed to find dozer.properties via com.github.dozermapper.core.config.resolvers.LegacyPropertiesSettingsResolver.
+WARN  2020-12-28 21:04:40,025 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] com.github.dozermapper.core.el.ELExpressionFactory: javax.el is not supported; Failed to resolve ExpressionFactory, Cannot load class 'com.sun.el.ExpressionFactoryImpl': [
+	com.sun.el.ExpressionFactoryImpl, 
+	Cannot load class 'com.sun.el.ExpressionFactoryImpl': [
+	Class 'com.sun.el.ExpressionFactoryImpl' has no package mapping for region 'domain/default/app/plhg-item-to-product-pricebook-v2'., 
+	Cannot load class 'com.sun.el.ExpressionFactoryImpl': [
+	Class 'com.sun.el.ExpressionFactoryImpl' has no package mapping for region '/domain/default'., 
+	Class 'com.sun.el.ExpressionFactoryImpl' not found in classloader for artifact 'container'.]]]
+INFO  2020-12-28 21:04:40,147 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] com.github.dozermapper.core.builder.xml.SchemaLSResourceResolver: Trying to resolve XML entity with public ID [null] and system ID [http://dozermapper.github.io/schema/bean-mapping.xsd]
+INFO  2020-12-28 21:04:40,148 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] com.github.dozermapper.core.builder.xml.SchemaLSResourceResolver: Resolved public ID [null] and system ID [http://dozermapper.github.io/schema/bean-mapping.xsd]
+INFO  2020-12-28 21:04:40,152 [[MuleRuntime].io.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.BLOCKING @65d82a36] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] com.github.dozermapper.core.builder.xml.BeanMappingXMLBuilder: Successfully loaded custom xml mapping.
+INFO  2020-12-28 21:04:41,078 [[MuleRuntime].cpuIntensive.04: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Log Upsert Product Result: [{ProductCode=T43, Name=Tins, Description=Tools, IsActive=true}]
+INFO  2020-12-28 21:04:41,085 [[MuleRuntime].cpuIntensive.04: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: null
+INFO  2020-12-28 21:04:41,888 [[MuleRuntime].cpuIntensive.05: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: [{ProductCode=T43, Name=Tins, Description=Tools, IsActive=true}]
+INFO  2020-12-28 21:04:41,909 [[MuleRuntime].cpuIntensive.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: exit from flow
+INFO  2020-12-28 21:04:41,919 [[MuleRuntime].cpuIntensive.07: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: null
+INFO  2020-12-28 21:04:43,474 [[MuleRuntime].cpuIntensive.08: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: ***********Result*******{
+  "ShippingWeightUnits": "Tons",
+  "ProductCode": "P43",
+  "ItemType": "Pipes",
+  "LastModifiedDate": "2020-12-28T20:54:08",
+  "IsActive": "True",
+  "Name": "SteelPipes",
+  "ShippingWeight": "4",
+  "ReplaceWith": "Pipes",
+  "PartDescription": "Pipes",
+  "PartNumber": "432"
+}
+INFO  2020-12-28 21:04:43,475 [[MuleRuntime].cpuIntensive.08: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Product to Upsert: {
+  "ShippingWeightUnits": "Tons",
+  "ProductCode": "P43",
+  "ItemType": "Pipes",
+  "LastModifiedDate": "2020-12-28T20:54:08",
+  "IsActive": "True",
+  "Name": "SteelPipes",
+  "ShippingWeight": "4",
+  "ReplaceWith": "Pipes",
+  "PartDescription": "Pipes",
+  "PartNumber": "432"
+}
+INFO  2020-12-28 21:04:44,348 [[MuleRuntime].cpuIntensive.10: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Log Upsert Product Result: [{ProductCode=P43, Name=SteelPipes, Description=Pipes, IsActive=true}]
+INFO  2020-12-28 21:04:44,350 [[MuleRuntime].cpuIntensive.10: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: null
+INFO  2020-12-28 21:04:45,177 [[MuleRuntime].cpuIntensive.11: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: [{ProductCode=P43, Name=SteelPipes, Description=Pipes, IsActive=true}]
+INFO  2020-12-28 21:04:45,181 [[MuleRuntime].cpuIntensive.01: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: exit from flow
+INFO  2020-12-28 21:04:45,191 [[MuleRuntime].cpuIntensive.12: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: null
+INFO  2020-12-28 21:04:46,840 [[MuleRuntime].cpuIntensive.03: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: ***********Result*******{
+  "ShippingWeightUnits": "Tons",
+  "ProductCode": "B43",
+  "ItemType": "Pipes",
+  "LastModifiedDate": "2020-12-28T20:58:08",
+  "IsActive": "True",
+  "Name": "Bronze",
+  "ShippingWeight": "4",
+  "ReplaceWith": "Pipes",
+  "PartDescription": "Pipes",
+  "PartNumber": "342"
+}
+INFO  2020-12-28 21:04:46,843 [[MuleRuntime].cpuIntensive.03: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Product to Upsert: {
+  "ShippingWeightUnits": "Tons",
+  "ProductCode": "B43",
+  "ItemType": "Pipes",
+  "LastModifiedDate": "2020-12-28T20:58:08",
+  "IsActive": "True",
+  "Name": "Bronze",
+  "ShippingWeight": "4",
+  "ReplaceWith": "Pipes",
+  "PartDescription": "Pipes",
+  "PartNumber": "342"
+}
+INFO  2020-12-28 21:04:47,723 [[MuleRuntime].cpuIntensive.04: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Log Upsert Product Result: [{ProductCode=B43, Name=Bronze, Description=Pipes, IsActive=true}]
+INFO  2020-12-28 21:04:47,725 [[MuleRuntime].cpuIntensive.04: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: null
+INFO  2020-12-28 21:04:48,579 [[MuleRuntime].cpuIntensive.05: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: [{ProductCode=B43, Name=Bronze, Description=Pipes, IsActive=true}]
+INFO  2020-12-28 21:04:48,582 [[MuleRuntime].cpuIntensive.06: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: exit from flow
+INFO  2020-12-28 21:04:48,593 [[MuleRuntime].cpuIntensive.07: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: null
+INFO  2020-12-28 21:04:50,346 [[MuleRuntime].cpuIntensive.08: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: ***********Result*******{
+  "ShippingWeightUnits": "Tons",
+  "ProductCode": "tolls",
+  "ItemType": "Tools",
+  "LastModifiedDate": "2020-12-28T21:03:35",
+  "IsActive": "True",
+  "Name": "Nails",
+  "ShippingWeight": "4",
+  "ReplaceWith": "Tools",
+  "PartDescription": "tools",
+  "PartNumber": "4"
+}
+INFO  2020-12-28 21:04:50,350 [[MuleRuntime].cpuIntensive.08: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Product to Upsert: {
+  "ShippingWeightUnits": "Tons",
+  "ProductCode": "tolls",
+  "ItemType": "Tools",
+  "LastModifiedDate": "2020-12-28T21:03:35",
+  "IsActive": "True",
+  "Name": "Nails",
+  "ShippingWeight": "4",
+  "ReplaceWith": "Tools",
+  "PartDescription": "tools",
+  "PartNumber": "4"
+}
+INFO  2020-12-28 21:04:51,218 [[MuleRuntime].cpuIntensive.10: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Log Upsert Product Result: [{ProductCode=tolls, Name=Nails, Description=tools, IsActive=true}]
+INFO  2020-12-28 21:04:51,221 [[MuleRuntime].cpuIntensive.10: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: null
+INFO  2020-12-28 21:04:52,046 [[MuleRuntime].cpuIntensive.11: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: [{ProductCode=tolls, Name=Nails, Description=tools, IsActive=true}]
+INFO  2020-12-28 21:04:52,049 [[MuleRuntime].cpuIntensive.01: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: exit from flow
+INFO  2020-12-28 21:04:52,052 [[MuleRuntime].cpuIntensive.12: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Succesfully created pricebook
+INFO  2020-12-28 21:04:52,052 [[MuleRuntime].cpuIntensive.12: [plhg-item-to-product-pricebook-v2].endpointsFlow.CPU_INTENSIVE @7382bf5] [event: 31f99cd0-4922-11eb-97aa-8cec4bc996ad] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: upsert SFDC product batch started

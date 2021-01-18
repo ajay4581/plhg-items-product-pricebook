@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+	<sub-flow name="Logging_MainFlow_StartLog" >
+		<set-variable value="#[dw::util::Timer::currentMilliseconds()]" doc:name="mainFlow_StartTime" variableName="mainFlow_StartTime"/>
+		<flow-ref doc:name="TDW-TrackingId" name="TDW-TrackingId"/>
+		<set-variable value="true" doc:name="Set preserveType to true" variableName="preserveType"/>
+		<flow-ref name="Logging_FormatPayload" doc:name="Logging_FormatPayload"/>	
+		<set-variable variableName="appName" value="#[app.name]" doc:name="Set appName"/>
+		<ee:transform doc:name="mainFlow_RequestLogInfo" doc:id="5b154f05-8813-4fb8-b4d1-1de23c0ffa3e">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="mainFlow_RequestLogInfo"><![CDATA[%dw 2.0
+output application/json
+---
+{
+    message: 'Start of main flow ' ++ (if(isBlank(vars.mainFlowDesc)) '' else '- ') ++ (if(vars.mainFlowDesc != null) vars.mainFlowDesc else ''),
+    appName: vars.appName,
+    'TDW-TrackingId': vars.transactionId,
+	inbound_request: {
+		http_host: attributes.headers['host'],
+		http_listener_path: attributes.listenerPath,
+		http_method: attributes.method,
+		http_path: attributes.requestUri,
+		http_protocol: attributes.scheme,
+		http_query_string: attributes.queryString,
+		http_remote_address: attributes.remoteAddress,
+		http_uri_params: attributes.queryParams,
+		http_verb: attributes.method,
+		original_payload: vars.formattedPayload
+	}
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger message="#[vars.mainFlow_RequestLogInfo]" level="INFO" doc:name="Log request payload" />
+        <flow-ref name="Logging_FormatPayload" doc:name="Logging_FormatPayload"/>
+        <set-variable variableName="mainEndLogType" value="true" doc:name="Set mainEndLogType"/>
+	</sub-flow>
+	
+	<sub-flow name="Logging_MainFlow_EndLog" doc:description="This subflow is intented to log the end of processing for an API call.  This log contains the total time to process the request measured in milliseconds, it also contains both the request to the API as well as the API's response.  Additional information can also be added by setting the flowVar mainAdditionalInfo with any pertinent information regardingt the API processing which can include, but not limited to, subflows and outside http calls made by the API.  MainFlow_StartLog should have been called prior to calling this subflow in order to calculate the total processing time.  Optional field vars.hidePayload should be set to true if the payload is to be hidden or contains sensitive information.  The output of this subflow includes vars.mainFlow_ResponseLogInfo and vars.mainFlowLogInfo which are most likely only to be used in MainFlow_EndLog.">
+        <flow-ref name="Logging_FormatPayload" doc:name="Logging_FormatPayload"/>
+        <set-variable variableName="mainFlow_RequestLogInfo" value="#[if(vars.mainFlow_RequestLogInfo == null) &quot;&quot; else vars.mainFlow_RequestLogInfo]" doc:name="mainFlow_RequestLogInfo default" />
+        <ee:transform doc:name="mainFlow_ResponseLogInfo" doc:id="7aba451e-1576-4845-a2ba-61b4e1e3a231">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="mainFlow_ResponseLogInfo"><![CDATA[%dw 2.0
+	output application/json
+	---
+	{
+		http_status: attributes.statusCode,
+		http_reason: attributes.reasonPhrase,
+		response_payload: vars.formattedPayload
+	}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<set-variable value="#[dw::util::Timer::currentMilliseconds()]" doc:name="mainFlow_EndTime" variableName="mainFlow_EndTime"/>
+		<ee:transform doc:name="mainFlow_RequestLogInfo as String" doc:id="cb009a1c-e0ad-47f6-9722-2fe78f3fdd8a">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="str_mainFlow_RequestLogInfo"><![CDATA[%dw 2.0
+	output application/java
+	---
+	write (vars.mainFlow_RequestLogInfo, 'application/json')]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="mainFlow_ResponseLogInfo as String" doc:id="17a1d3db-65c5-44ae-9056-ee9a38fe20c1">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="str_mainFlow_ResponseLogInfo"><![CDATA[%dw 2.0
+	output application/java
+	---
+	write (vars.mainFlow_ResponseLogInfo,'application/json')]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform doc:name="mainFlowLogInfo" doc:id="10f6904d-9caf-4293-8c33-1b83ada8ba2a">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="mainFlowLogInfo"><![CDATA[%dw 2.0
+	output application/json
+	---
+	{
+		message: 'End of main flow ' ++ (if(isBlank(vars.mainFlowDesc)) '' else '- ') ++ (if(vars.mainFlowDesc != null) vars.mainFlowDesc else ''),
+		appName: app.name,
+		total_time_ms: if(vars.mainFlow_StartTime != null) vars.mainFlow_EndTime - vars.mainFlow_StartTime else vars.mainFlow_EndTime,
+		'TDW-TrackingId':  vars.transactionId,
+		request: vars.str_mainFlow_RequestLogInfo as String replace "\n" with " " replace "\r" with " " replace "\s{2,}" with " ",
+		response: vars.str_mainFlow_ResponseLogInfo as String replace "\n" with " " replace "\r" with " " replace "\s{2,}" with " ",
+		'additional information': vars.mainAdditionalInfo
+	}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+        <logger message="#[vars.mainFlowLogInfo]" level="INFO" doc:name="Log main flow info"/>
+    </sub-flow>
+    
+    <sub-flow name="Logging_Subflow_StartLog">
+		<set-variable variableName="subflow_StartTime" value="#[dw::util::Timer::currentMilliseconds()]" doc:name="subflow_StartTime"/>
+		<set-variable variableName="subflowEndLogType" value="true" doc:name="Set subflowEndLogType" />
+	</sub-flow>    
+	
+	<sub-flow name="Logging_Subflow_EndLog">
+        <flow-ref doc:name="TDW-TrackingId" name="TDW-TrackingId"/>
+        <set-variable variableName="subflow_EndTime" value="#[dw::util::Timer::currentMilliseconds()]" doc:name="subflow_EndTime"/>
+        <ee:transform doc:name="mainFlowLogInfo" doc:id="f2e59878-f353-4bb9-ab37-204c29f4e102">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="subflowLogInfo"><![CDATA[%dw 2.0
+	output application/json
+	---
+	{
+		message: vars.subflowDesc,
+		appName: app.name,
+		total_time_ms: vars.subflow_EndTime - vars.subflow_StartTime,
+		'TDW-TrackingId':  vars.transactionId,
+		'HTTP Calls': vars.subflowHttpCalls
+	}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+        <logger message="#[vars.subflowLogInfo]" level="INFO" doc:name="Log sub flow info"/>
+        <remove-variable variableName="subflowEndLogType" doc:name="Remove subflowEndLogType"/>
+    </sub-flow>
+    
+    <sub-flow name="Logging_HTTP_StartLog">
+		<flow-ref name="Logging_FormatPayload" doc:name="Logging_FormatPayload"/>
+        <set-variable variableName="httpCall_StartTime" value="#[dw::util::Timer::currentMilliseconds()]" doc:name="httpCall_StartTime"/>
+        <ee:transform doc:name="Save request log info" doc:id="5bf9829b-2240-4508-84e1-c86d41d76560">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="httpFormattedRequestInfo"><![CDATA[%dw 2.0
+	output application/json
+	---
+	{
+		request: {
+			url: vars.apiUrl,
+			request_payload: vars.formattedPayload
+		}
+	}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+        <set-variable variableName="httpEndLogType" value="true" doc:name="Set httpEndLogType"/>
+	</sub-flow>  
+	
+	<sub-flow name="Logging_HTTP_EndLog">
+    	<flow-ref doc:name="TDW-TrackingId" name="TDW-TrackingId"/>
+        <flow-ref name="Logging_FormatPayload" doc:name="Logging_FormatPayload"/>
+        <set-variable variableName="httpCall_EndTime" value="#[dw::util::Timer::currentMilliseconds()]" doc:name="httpCall_EndTime"/>
+        <ee:transform doc:name="httpLogInfo" doc:id="c2bc4797-3e39-44b8-9541-8cce4ee16738">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="httpLogInfo"><![CDATA[%dw 2.0
+	output application/json
+	---
+	{
+		message: 'HTTP call - ' ++ vars.httpCallDesc,
+		total_time_ms: vars.httpCall_EndTime - vars.httpCall_StartTime,
+		'TDW-TrackingId': vars.transactionId,
+		request: {
+			url: vars.apiUrl,
+			request_payload: vars.formattedPayload
+		},
+		response: {
+			http_status: attributes.statusCode,
+			http_reason: attributes.reasonPhrase,
+			content_type: attributes['content-type'],
+			content_length: attributes['content-length'],
+			response_payload: vars.formattedPayload
+		}
+	}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+        <remove-variable variableName="httpFormattedRequestInfo" doc:name="Remove httpFormattedRequestInfo"/>
+        <remove-variable variableName="httpProcessed" doc:name="Remove httpProcessed"/>
+        <remove-variable variableName="httpEndLogType" doc:name="Remove httpEndLogType"/>
+    </sub-flow>	 
+    
+	<sub-flow name="Logging_FormatPayload">
+        <choice doc:name="Hide Payload?">
+            <when expression="#[if(vars.hidePayload != null) vars.hidePayload as Boolean == true else false]">
+                <set-variable variableName="formattedPayload" value='Payload hidden' doc:name="Hide Secure Payload"/>
+            </when>
+            <otherwise>
+				<try doc:name="Try" doc:id="55fd1edd-c494-483e-80ef-c3d36ca4ac18" >
+					<ee:transform doc:name="Payload as String" doc:id="5ad26a75-1e26-4b5b-b993-93a66585c953">
+						<ee:message />
+						<ee:variables>
+							<ee:set-variable variableName="payloadAsString"><![CDATA[%dw 2.0
+output application/java
+---
+if(payload != null and not isEmpty(payload)) write (payload, 'application/json') else null
+]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<set-variable variableName="formattedPayload" value='#[if(vars.payloadAsString == null or isBlank(vars.payloadAsString)) "empty payload" else (vars.payloadAsString replace "\n" with " " replace "\r" with " " replace "\s{2,}" with " ")]' doc:name="Format Payload" />
+					<error-handler >
+						<on-error-continue enableNotifications="false" logException="false" doc:name="Failure to log payload as Json" >
+							<set-payload value="#[null]" doc:name="Set Payload to Null"  />
+						</on-error-continue>
+					</error-handler>
+				</try>       
+			</otherwise>
+        </choice>
+        <set-variable variableName="payloadStartingSubstringAsLower" value="#[if(vars.formattedPayload != null and sizeOf(vars.formattedPayload) &gt; 13) lower(vars.formattedPayload[0 to 14]) else vars.formattedPayload]" doc:name="Set payloadStartingSubstringAsLower"/>
+        <set-variable variableName="formattedPayload" value='#[if(vars.formattedPayload != null and sizeOf(vars.formattedPayload) &gt; 5000) vars.formattedPayload[0 to 5000] ++ "... [truncated]" else vars.formattedPayload]' doc:name="Truncate to 5000 characters" doc:id="5331cb43-4937-4784-9362-4ae4c1851362"/>
+        <choice doc:name="Payload Type">
+            <when expression="#[if(vars.preserveType != null) vars.preserveType as Boolean == true else false]">
+                <set-variable variableName="formattedPayload" value="#[vars.formattedPayload]" doc:name="formattedPayload"/>
+            </when>
+            <when expression="#[isBlank(vars.formattedPayload)]">
+                <set-variable variableName="formattedPayload" value="#['empty payload']" doc:name="empty formattedPayload"/>
+            </when>
+			<otherwise>
+				<set-variable variableName="formattedPayload" value="#['&quot;' ++ vars.formattedPayload replace '&quot;\&quot;&quot;' with '&quot;\\\&quot;&quot;' replace '&quot;\\\\\\\&quot;&quot;' with '&quot;\\\&quot;&quot;' replace '&quot;\\\\\&quot;&quot;' with '&quot;\\\&quot;&quot;' ++ '&quot;']" doc:name="escape double quotes" />
+            </otherwise>
+		</choice>
+        <remove-variable variableName="hidePayload" doc:name="Remove hidePayload"/>
+        <remove-variable variableName="preserveType" doc:name="Remove preserveType"/>
+	</sub-flow>
+ 
+</mule>

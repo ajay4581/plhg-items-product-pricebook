@@ -1,0 +1,51 @@
+{
+  "configs": [
+    "common-logging.xml",
+    "businessLogic.xml",
+    "config.xml",
+    "errorhandling.xml",
+    "endpoints.xml",
+    "common-error-handlers.xml",
+    "httplistener.xml",
+    "trackingid.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "com.mycompany:plhg-item-to-product-pricebooks:2.0.0-SNAPSHOT",
+  "minMuleVersion": "4.2.2-hf1",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "api/common.properties",
+        "application-types.xml",
+        "businessLogic.xml",
+        "common-error-handlers.xml",
+        "common-logging.xml",
+        "common.properties",
+        "config.xml",
+        "endpoints.xml",
+        "errorhandling.xml",
+        "examples/pbe-1.json",
+        "examples/pbe.json",
+        "examples/products2.csv",
+        "httplistener.xml",
+        "log4j2.xml",
+        "Logs/logs",
+        "mule.artifact.properties",
+        "mule.dev.properties",
+        "mule.prod.properties",
+        "mule.qa.properties",
+        "sample.json",
+        "schemas/database schemas",
+        "trackingid.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}

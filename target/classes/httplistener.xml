@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="httplistenerFlow" doc:id="b68c9121-8410-44e4-8a1a-5a4642bdbba7" >
+		<http:listener doc:name="Listener" doc:id="7882cbb1-1e25-425f-bfeb-b55986648449" config-ref="HTTP_Listener_config" path="/test" allowedMethods="POST"/>
+		<flow-ref doc:name="Flow Reference" doc:id="5e73a380-bbfd-44d7-8c2a-b0d2f285192b" name="ProductStepSubFlow"/>
+	</flow>
+</mule>

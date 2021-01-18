@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="businessLogic-suite.xml" />
+	<munit:test name="ProductStepSubFlow-test" doc:id="3de9f4d4-5279-4f72-b286-dbac26791125" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Query SFDC Product" doc:id="f052d8fb-1828-4f77-8b5b-0aec13257124" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="d44be25b-6f30-48e5-99fd-d8d68f7faa54" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://ProductStepSubFlowtest\mock_payload.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subflowEndLogType" value="#[readUrl('classpath://ProductStepSubFlowtest\mock_variable_.dwl')]" encoding="UTF-8" />
+						<munit-tools:variable key="rootMessage" value="#[readUrl('classpath://ProductStepSubFlowtest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="subflow_StartTime" value="#[output application/java --- readUrl('classpath://ProductStepSubFlowtest\mock_variable_2.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="test" value="#[output application/java --- readUrl('classpath://ProductStepSubFlowtest\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="counter" value="#[readUrl('classpath://ProductStepSubFlowtest\mock_variable_4.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock CreateProduct" doc:id="688f963f-5019-4084-b823-c88ae624739c" processor="salesforce:create">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="5d371b9d-b7eb-4f12-bff6-437138590dae" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- readUrl('classpath://ProductStepSubFlowtest\mock_payload1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="subflowEndLogType" value="#[readUrl('classpath://ProductStepSubFlowtest\mock_variable_5.dwl')]" encoding="UTF-8" />
+						<munit-tools:variable key="rootMessage" value="#[readUrl('classpath://ProductStepSubFlowtest\mock_variable_6.dwl')]" />
+						<munit-tools:variable key="subflow_StartTime" value="#[output application/java --- readUrl('classpath://ProductStepSubFlowtest\mock_variable_7.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="test" value="#[output application/java --- readUrl('classpath://ProductStepSubFlowtest\mock_variable_8.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="counter" value="#[readUrl('classpath://ProductStepSubFlowtest\mock_variable_9.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="a1b4f6f1-f866-4dcc-9772-bc6988329652" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://ProductStepSubFlowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://ProductStepSubFlowtest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to ProductStepSubFlow" doc:id="c94414dd-2b71-4831-ae36-321d7eb455cb" name="ProductStepSubFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="bc5d1530-09f2-477d-8eda-81340af2ca51" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import ProductStepSubFlowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

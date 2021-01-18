@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="batcherrorhandlingflow" doc:id="83f5150b-4a3e-4180-8b09-685e30f482ed" >
+		<logger level="INFO" doc:name="Logger" doc:id="882cae8d-045d-4e2f-903f-cbf09129705d" message='*****Error Occured in Batch for PartNumber*******#[payload."Part Number"]'/>
+	</flow>
+	<flow name="mainerrorhandlingflow" doc:id="855706f2-3576-432a-a74d-03394d4b9a16" >
+		<logger level="INFO" doc:name="Logger" doc:id="d3c1a2c2-c732-4755-ab87-fe6f949c9c21" message="********Error Occured in Mule Mainflow(Not in DB and Batch Flow)*********"/>
+	</flow>
+</mule>

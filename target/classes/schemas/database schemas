@@ -1,0 +1,46 @@
+=======================================================
+Create table name "items" 
+=======================================================
+CREATE TABLE `item` (
+   `Id` int(11) NOT NULL,
+   `Name` varchar(45) DEFAULT NULL,
+   `ItemDescription` varchar(45) DEFAULT NULL,
+   `ItemCode` varchar(45) DEFAULT NULL,
+   `ItemNumber` varchar(45) DEFAULT NULL,
+   `ItemType` varchar(45) DEFAULT NULL,
+   `ReplaceWith` varchar(45) DEFAULT NULL,
+   `ShippingWeight` varchar(45) DEFAULT NULL,
+   `ShippingWeightUnits` varchar(45) DEFAULT NULL,
+   `IsActive` varchar(45) DEFAULT NULL,
+   `LastModifiedDate` datetime DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (`Id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+ 
+ ========================================================
+ Insert into table "item" query
+ ========================================================
+ INSERT INTO `project`.`item`
+(`Id`,
+`Name`,
+`ItemDescription`,
+`ItemCode`,
+`ItemNumber`,
+`ItemType`,
+`ReplaceWith`,
+`ShippingWeight`,
+`ShippingWeightUnits`,
+`IsActive`,
+`LastModifiedDate`)
+VALUES
+(<{Id: }>,
+<{Name: }>,
+<{ItemDescription: }>,
+<{ItemCode: }>,
+<{ItemNumber: }>,
+<{ItemType: }>,
+<{ReplaceWith: }>,
+<{ShippingWeight: }>,
+<{ShippingWeightUnits: }>,
+<{IsActive: }>,
+<{LastModifiedDate: CURRENT_TIMESTAMP}>);
+ 
