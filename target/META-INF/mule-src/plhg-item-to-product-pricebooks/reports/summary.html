@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>MUnit Coverage Report</title>
+    <link rel="stylesheet" type="text/css" href="assets/styles/mulesoft-styles.css">
+    <link rel="stylesheet" type="text/css" href="assets/styles/tsorter.css">
+</head>
+<body>
+<div class="mulesoft-topbar">
+    <div class="mulesoft-appbar">
+        <div class="muleicon muleicon-logo"></div>
+        <div class="anypoint-brand">MUnit Coverage Report - Mule Configuration Files</div>
+    </div>
+</div>
+<div class="col-md-8 col-md-offset-2">
+    <h2 class="text-bold">Application Coverage*</h2>
+    <div class="progress">
+        <span>23.13%</span>
+        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="23.129" aria-valuemin="0"
+             aria-valuemax="100" style="width: 23.129%;">
+        </div>
+    </div>
+    <ul class="list-unstyled">
+        <li>
+            <h4><b>Required Application Coverage :</b>
+                N/A
+            </h4>
+        </li>
+    </ul>
+    <h2 class="text-bold">Mule Configuration Files</h2>
+    <table id="resources_table" class="table table-featured table-hover sortable">
+        <thead>
+        <tr>
+            <th colspan="2" data-tsorter="link">Resource</th>
+            <th data-tsorter="numeric">#Containers</th>
+            <th data-tsorter="numeric">Weight%**</th>
+            <th data-tsorter="coverage">Coverage*</th>
+        </tr>
+        </thead>
+        <tbody id="table-body">
+        <tr>
+            <td colspan="2"><a href=common-logging-report.html>common-logging.xml</a></td>
+            <td>7</td>
+            <td>31.29</td>
+            <td>
+                    <div class="progress">
+                        <span>54.35%</span>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="54.348"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 54.348%;">
+                        </div>
+                    </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><a href=businessLogic-report.html>businessLogic.xml</a></td>
+            <td>1</td>
+            <td>17.01</td>
+            <td>
+                    <div class="progress">
+                        <span>0%</span>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                        </div>
+                    </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><a href=errorhandling-report.html>errorhandling.xml</a></td>
+            <td>2</td>
+            <td>1.36</td>
+            <td>
+                    <div class="progress">
+                        <span>0%</span>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                        </div>
+                    </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><a href=endpoints-report.html>endpoints.xml</a></td>
+            <td>1</td>
+            <td>8.84</td>
+            <td>
+                    <div class="progress">
+                        <span>61.54%</span>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="61.538"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 61.538%;">
+                        </div>
+                    </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><a href=common-error-handlers-report.html>common-error-handlers.xml</a></td>
+            <td>7</td>
+            <td>39.46</td>
+            <td>
+                    <div class="progress">
+                        <span>0%</span>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                        </div>
+                    </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><a href=httplistener-report.html>httplistener.xml</a></td>
+            <td>1</td>
+            <td>0.68</td>
+            <td>
+                    <div class="progress">
+                        <span>0%</span>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                        </div>
+                    </div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><a href=trackingid-report.html>trackingid.xml</a></td>
+            <td>1</td>
+            <td>1.36</td>
+            <td>
+                    <div class="progress">
+                        <span>50%</span>
+                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="50"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+                        </div>
+                    </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h4>(*) Number of processors executed during test</h4>
+    <h4>(**) Number of processors inside the resource over the total number of processors in the application</h4>
+</div>
+<script type="text/javascript" src="assets/js/tsorter.min.js"></script>
+<script type="text/javascript">
+    function init() {
+        var sorter = tsorter.create('resources_table', 0, {
+            coverage: function (row) {
+                var cov = this.getCell(row).childNodes[1].childNodes[3].attributes['aria-valuenow'].textContent;
+                return parseFloat(cov.substring(cov[0].length - 1), 10);
+            }
+        });
+    }
+
+    window.onload = init;
+
+</script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	
+	<error-handler name="GlobalExceptionHandler" >
+		<on-error-propagate type="VALIDATION" enableNotifications="false" logException="false" doc:name="400">
+			<flow-ref name="GetExceptionMessage" doc:name="GetExceptionMessage"/>
+			<logger message="400 || Uri = #[attributes.requestUri] || Error = #[vars.exceptionMessage]" level="ERROR" doc:name="Log Error" />		
+			<logger message="400 || Message = #[message]" level="DEBUG" doc:name="Log Debug Info" />
+			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Set Payload and 400 HTTP Status">
+                <ee:message>
+                    <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    error: vars.exceptionMessage
+}]]></ee:set-payload>
+                </ee:message>
+                <ee:variables>
+                    <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                </ee:variables>
+            </ee:transform>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+		</on-error-propagate>
+		<on-error-propagate when="#[vars.httpStatus == 400 or attributes.response.statusCode == 400]" enableNotifications="false" logException="false" doc:name="400">
+			<flow-ref name="GetExceptionMessage" doc:name="GetExceptionMessage"/>
+			<logger message="400 || Uri = #[attributes.requestUri] || Error = #[vars.exceptionMessage]" level="ERROR" doc:name="Log Error" />		
+			<logger message="400 || Message = #[message]" level="DEBUG" doc:name="Log Debug Info" />
+			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Set Payload and 400 HTTP Status">
+                <ee:message>
+                    <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    error: vars.exceptionMessage
+}]]></ee:set-payload>
+                </ee:message>
+                <ee:variables>
+                    <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                </ee:variables>
+            </ee:transform>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+		</on-error-propagate>
+		<on-error-propagate type="HTTP:UNAUTHORIZED, SECURITY" when="#[vars.httpStatus == 401 or attributes.response.statusCode == 401]" enableNotifications="false" logException="false" doc:name="401">
+			<logger message="401 || Uri = #[if(isBlank(attributes.requestUri)) vars.request_URI else attributes.requestUri] || Auth Token = #[if(isBlank(attributes.'Authorization')) vars.header_Authorization else attributes.'Authorization']"
+				level="ERROR" doc:name="Log Error" />
+			<logger message="401 || Message = #[message]" level="DEBUG" doc:name="Log Debug Info" />
+            <set-variable value="401" doc:name="Set 401 HTTP Status" variableName="httpStatus"/>
+			<set-payload value="#[&quot;&quot;]" doc:name="Set Empty Payload"/>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+		</on-error-propagate>
+		<on-error-propagate when="#[vars.httpStatus == 501 or attributes.response.statusCode == 501]" enableNotifications="false" logException="false" doc:name="501">
+		    <flow-ref name="GetExceptionMessage" doc:name="GetExceptionMessage"/>
+			<logger message="501 || Uri = #[attributes.requestUri] || Error = #[vars.exceptionMessage] || Message= Endpoint not implemented"
+				level="ERROR" doc:name="Log Error" />
+			<logger message="501 || Exception = #[error.description] || Message = #[message]" level="DEBUG" doc:name="Log Debug Info" />
+            <set-variable value="501" doc:name="Set 501 HTTP Status" variableName="httpStatus"/>
+            <set-variable value="#[&quot;Not Implemented&quot;]" doc:name="HTTP Reason Not Implemented" variableName="reasonPhrase"/>
+			<set-payload value="#[&quot;&quot;]" doc:name="Set Empty Payload"/>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+		</on-error-propagate>
+		<on-error-propagate when="#[vars.httpStatus == 500 or attributes.response.statusCode == 500]" enableNotifications="false" logException="false" doc:name="500">
+		    <flow-ref name="GetExceptionMessage" doc:name="GetExceptionMessage"/>
+		    <flow-ref name="GetLastLog" doc:name="GetLastLog"/>
+			<logger message="500 || Uri = #[attributes.requestUri] || Error = #[vars.exceptionMessage] || Message= #[vars.lastLog]"
+				level="ERROR" doc:name="Log Error" />
+			<logger message="500 || Exception = #[error.description] || Message = #[message]" level="DEBUG" doc:name="Log Debug Info" />
+            <set-variable value="500" doc:name="Set 500 HTTP Status" variableName="httpStatus"/>
+          	<flow-ref name="ExceptionHandling_Set500ResponsePayload" doc:name="Set500ResponsePayload"/>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+            <remove-variable variableName="lastLog" doc:name="Remove lastLog"/>
+		</on-error-propagate>	
+	</error-handler>
+	
+	<error-handler name="GlobalExceptionMapping-apiKit">
+		 <on-error-propagate type="APIKIT:NOT_FOUND">
+		 	<flow-ref name="Logging_MainFlow_StartLog" doc:name="Logging_MainFlow_StartLog"/>
+	        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Set Payload" doc:id="e656b048-0f3c-43dc-be7e-89a40bbcc879">
+                <ee:message>
+                    <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    error: 'No listener for endpoint: ' ++ attributes.requestUri ,
+    payload: vars.formattedPayload
+}]]></ee:set-payload>
+                </ee:message>
+                <ee:variables>
+                    <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                </ee:variables>
+        	</ee:transform>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+        </on-error-propagate>
+    	<on-error-propagate type="APIKIT:BAD_REQUEST" enableNotifications="true" logException="true">
+    		<flow-ref name="Logging_MainFlow_StartLog" doc:name="Logging_MainFlow_StartLog"/>
+			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Set Payload" doc:id="bd5139a2-4175-4258-9de0-626e56b86f7c">
+                <ee:message>
+                    <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    error: if(not isBlank(error.description)) 'Bad request: ' ++ (error.description replace '&quot;\\s\\(.+\\)&quot' with '&quot;&quot;' replace '&quot;\&quot;&quot;)' with '&quot;\\\&quot;&quot;') else 'Bad request',
+    payload: vars.formattedPayload  
+
+}]]></ee:set-payload>
+                </ee:message>
+                <ee:variables>
+                    <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                </ee:variables>
+            </ee:transform>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+     	</on-error-propagate>
+     	<on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+     		<flow-ref name="Logging_MainFlow_StartLog" doc:name="Logging_MainFlow_StartLog"/>
+			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Set Payload">
+                <ee:message>
+                    <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    error: 'Method not allowed',
+    payload: vars.formattedPayload
+}]]></ee:set-payload>
+                </ee:message>
+                <ee:variables>
+                    <ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
+                </ee:variables>
+            </ee:transform>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+     	</on-error-propagate>
+     	<on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+     		<flow-ref name="Logging_MainFlow_StartLog" doc:name="Logging_MainFlow_StartLog"/>
+			<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Set Payload">
+                <ee:message>
+                    <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    error: 'Not acceptable',
+    payload: vars.formattedPayload
+}]]></ee:set-payload>
+                </ee:message>
+                <ee:variables>
+                    <ee:set-variable variableName="httpStatus"><![CDATA[406]]></ee:set-variable>
+                </ee:variables>
+            </ee:transform>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+     	</on-error-propagate>
+        <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+        	<flow-ref name="Logging_MainFlow_StartLog" doc:name="Logging_MainFlow_StartLog"/>
+	    	<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Set Payload">
+                <ee:message>
+                    <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    error: 'Unsupported media type',
+    payload: vars.formattedPayload
+}]]></ee:set-payload>
+                </ee:message>
+                <ee:variables>
+                    <ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
+                </ee:variables>
+        	</ee:transform>
+        	<flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+        </on-error-propagate>
+        <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+        	<flow-ref name="Logging_MainFlow_StartLog" doc:name="Logging_MainFlow_StartLog"/>
+	        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Set Payload">
+                <ee:message>
+                    <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    error: 'Not implemented',
+    payload: vars.formattedPayload
+}]]></ee:set-payload>
+                </ee:message>
+                <ee:variables>
+                    <ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+                </ee:variables>
+            </ee:transform>
+            <flow-ref name="Logging_MainFlow_EndLog" doc:name="Logging_MainFlow_EndLog"/>
+        </on-error-propagate>
+    </error-handler>
+	
+	<sub-flow name="ExceptionHandling_Set500ResponsePayload" >
+		<choice doc:name="Display Error As Is">
+            <when expression="#[if(vars.displayAsIs != null) vars.displayAsIs as Boolean else false]">
+				<set-payload value="#[vars.error]" doc:name="Set Payload" />      
+            </when>
+            <otherwise>
+                <flow-ref name="Logging_FormatPayload" doc:name="FormatPayload"/>
+                <ee:transform doc:name="Set Detailed Payload">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	exceptionMessage : vars.exceptionMessage, 
+	payload : vars.formattedPayload, 
+	(lastLog : vars.lastLog) if vars.lastLog != null
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>      
+            </otherwise>
+        </choice>
+	</sub-flow>
+	
+	<sub-flow name="GetExceptionMessage">
+        <flow-ref name="Common_GetGenericErrorMessage" doc:name="Common_GetGenericErrorMessage"/>
+        <set-variable variableName="isDefaultMessage" value="#[error.description  != null and error.description contains 'Value was expected to be true but it was false instead.']" doc:name="isDefaultMessage"/>
+        <set-variable variableName="exceptionMessage" value="#[if(vars.isDefaultMessage as Boolean) vars.genericErrorMessage else error.description]" doc:name="exceptionMessage"/>
+    </sub-flow>
+    
+    <sub-flow name="GetLastLog">
+        <choice doc:name="Has lastLog been previously set">
+            <when expression="#[isBlank(vars.lastLog)]">
+                <set-variable variableName="lastLog" value="#[if(isBlank(vars.httpFormattedRequestInfo)) vars.httpLogInfo else vars.httpFormattedRequestInfo]" doc:name="Set lastLog"/>
+            </when>
+            <otherwise>
+                <flow-ref name="DoNothing" doc:name="DoNothing"/>
+            </otherwise>
+        </choice>
+    </sub-flow>
+    
+    <sub-flow name="Common_GetGenericErrorMessage" doc:description="Use this flow to get the generic error message when no exception message is provided or when the exception is generally an internal error (500 response code). The flowVars.genericErrorMessage is actually set in this flow with 'An error has occurred. Please contact the administrator' message. This is a workaround to not being able to use properties file but needing to have one place to set the flowVar instead of having different copies everywhere it is needed.">
+        <set-variable variableName="genericErrorMessage" value="An error has occurred. Please contact the administrator" doc:name="Set genericErrorMessage"/>
+    </sub-flow>	
+    
+    <sub-flow name="DoNothing" doc:description='This flow can be used in:  
+* Choice connectors - for the Default portion.   
+* Message-filter connectors - for "On Unaccepted" portion.  
+
+This seemingly not valuable flow is currently being used.  Please do not remove without any replacement.'>
+        <remove-variable variableName="stress" doc:name="Remove stress"/>
+    </sub-flow>  
+</mule>

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="pbe" format="json">
+      <types:shape format="weave" example="examples/pbe-1.json"><![CDATA[%dw 2.0
+
+type pbe = Array<{|  Product2Id: String,   Pricebook2Id: String,   ProductName__c: String,   UnitPrice: String,   IsActive: Boolean|}> {"example": "[{\\\"Product2Id\\\":\\\"01t2y0000010VG8PM\\\",\\\"Pricebook2Id\\\":\\\"01s2y000002ChWbAK\\\",\\\"ProductName__c\\\":\\\"Steel\\\",\\\"UnitPrice\\\":\\\"100\\\",\\\"IsActive\\\":true}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#4d2014a2-2cca-4db8-9125-b380ca03e43f">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="pbe"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#51759725-975a-4597-99e2-340df4802add"/>
+  <types:enrichment select="#30cc8917-38c7-4e98-8262-e2029e0ba6e8"/>
+  <types:enrichment select="#f66ec602-d452-458d-8db8-1bacc0a2ac4d"/>
+</types:mule>

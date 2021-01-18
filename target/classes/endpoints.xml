@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="2943b7f6-9f8d-4e6c-8be0-8c77bae1e804" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="Miracle@1" database="project" />
+	</db:config>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="fcddeb72-a447-4a21-9a69-9063a1ecbbf2" />
+	<flow name="endpointsFlow" doc:id="bcf3c618-9dc2-4dd4-8726-0b885537b3d3" >
+		<scheduler doc:name="plhg-item-productpricebook- Scheduler " doc:id="895f0072-c981-460d-96b1-8123a28a0927" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="${scheduler.frequency}" startDelay="${scheduler.start.delay}" timeUnit="MINUTES"/>
+			</scheduling-strategy>
+		</scheduler>
+		<flow-ref doc:name="Calls Logging_MainFlow_StartLog" doc:id="ca59e723-dd6d-4420-93c1-0b4b3c81351a" name="Logging_MainFlow_StartLog"/>
+		<os:retrieve doc:name="Retrieve" doc:id="6fecdeed-bc7b-4911-adfd-502d2ea1aa4c" key="plhg-item-to-product-pricebook-wmkey" target="modifiedDate">
+			<os:default-value ><![CDATA[#["2020-11-09" as String {format:"yyyy-MM-dd HH:mm:ss"}]]]></os:default-value>
+		</os:retrieve>
+		<ee:transform doc:name="Transform Message" doc:id="417d9a79-b275-4cdd-a994-39908014fc5a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	mdDate:vars.modifiedDate
+	}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="LogTimeStamp" doc:id="8df88e63-14a0-4b0c-9997-fc6250eb5557" message='#[payload]'/>
+		<try doc:name="Try" doc:id="99b6ef80-3942-435e-a1b6-e0e3685d5d93" >
+			<db:select doc:name="Select Records from database table" doc:id="021f09cc-f2d2-42c7-8176-009753277aaf" config-ref="Database_Config">
+				<db:sql >select  Name,ItemDescription,ItemCode,ItemNumber,ItemType,ReplaceWith,ShippingWeight,ShippingWeightUnits,IsActive,LastModifiedDate from item where LastModifiedDate&gt;:mdDate
+</db:sql>
+				<db:input-parameters ><![CDATA[#[{
+	mdDate:vars.modifiedDate
+	}]]]></db:input-parameters>
+			</db:select>
+		</try>
+		<ee:transform doc:name="Transform Message" doc:id="e16cc47b-210f-408b-9f7e-a9b985a722a4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Check Db Items?" doc:id="fc5628c5-2418-4a4f-80b1-29b0f8e54a3e" >
+			<when expression="#[isEmpty(payload)]">
+				<logger level="INFO" doc:name="NoDBRecordsLogger" doc:id="bb888654-4f16-4f19-995a-559f6b3e711e" message='#["zero records to Process"]'/>
+				<flow-ref doc:name="Flow Reference" doc:id="9bd37e2b-6634-46a9-a1ca-26c207949161" name="Logging_MainFlow_EndLog"/>
+			</when>
+			<otherwise >
+				<os:store doc:name="Store" doc:id="d6aeb904-73df-4c20-9e4e-a122b3692995" key="plhg-item-to-product-pricebook-wmkey">
+			<os:value><![CDATA[#[max(payload map $.LastModifiedDate) as DateTime as String {format:"yyyy-MM-dd HH:mm:ss"}]]]></os:value>
+		</os:store>
+				<logger level="INFO" doc:name="Log DB Results" doc:id="1179771a-9f29-40fb-a1ef-00aa89e05ced" message="#[payload]" />
+				<flow-ref doc:name="TriggerProductStepSubFlow" doc:id="bc01c36d-787d-4848-9cfe-93134db1b026" name="ProductStepSubFlow" />
+				<logger level="INFO" doc:name="Logger" doc:id="5fe077dd-9a8b-4abb-98c0-a63920cc5039" message="upsert SFDC product batch started" />
+				<flow-ref doc:name="Calls Logging_MainFlow_EndLog" doc:id="62d1fe19-e48c-4f35-a6d4-d37c8f24d246" name="Logging_MainFlow_EndLog"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

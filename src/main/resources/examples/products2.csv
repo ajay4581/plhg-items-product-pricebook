@@ -1,0 +1,2 @@
+Name,PartDescription,ProductCode,PartNumber,ItemType,ReplaceWith,ShippingWeight,ShippingWeightUnits,IsActive
+WSGP-CAN,Fuels,EA123,123,Petrol,Diesel,10L,Litres,True

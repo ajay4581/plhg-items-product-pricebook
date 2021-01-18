@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="053b7fc7-cf9f-48a3-9e45-09d14251617b" >
+		<file:connection workingDir="C:\Users\anandamudi\AnypointStudio\studio-wor\plhg-item-to-product-pricebooks" />
+	</file:config>
+	<sub-flow name="ProductStepSubFlow" doc:id="e5ab39ec-0bf5-4b74-9fd4-ee18593932bc">
+		<ee:transform doc:name="Transform Message" doc:id="3672915d-c3ac-4bde-a20c-6ac3e421dc78">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Calls Logging_SubFlow_StartLog" doc:id="9c07f78b-aa45-42b8-80ed-a6ee8bc58a65" name="Logging_Subflow_StartLog"/>
+		<logger level="INFO" doc:name="Log Step Start" doc:id="87551223-b2e7-436f-8581-4eb1d5fcb434" message="#[payload]"/>
+		<foreach doc:name="For Each Product" doc:id="a1c673b3-26e6-4060-8c37-ecd540c926ed" collection="#[payload]">
+			<logger level="INFO" doc:name="Log product" doc:id="f66426e3-44df-4050-8522-0556c67826b2" message="#[payload.Product2Id]" />
+			<salesforce:query doc:name="Query SFDC Product" doc:id="d44be25b-6f30-48e5-99fd-d8d68f7faa54" config-ref="Salesforce_Config" target="test">
+				<salesforce:salesforce-query>SELECT Id, Name, ProductCode from Product2 </salesforce:salesforce-query>
+			</salesforce:query>
+			<ee:transform doc:name="Transform Message" doc:id="534be72a-4c84-4f43-874f-9cff6c1f9cad">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json	
+---
+payload]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<logger level="INFO" doc:name="Log SFDC product" doc:id="48094c53-1263-410c-a677-bb6a481a9ad6" message="***********Result*******#[payload]" />
+			<choice doc:name="Does SFDC product exist?" doc:id="257a485f-ac87-410c-a31a-eb09f19da0e8">
+				<when expression="#[payload.sfdcProduct == null]">
+					<logger level="INFO" doc:name="Log Response" doc:id="804d742f-28c4-4bc0-846d-049a8ba4115f" message="Product to Upsert: #[payload]" />
+					<ee:transform doc:name="Prepare product data" doc:id="928936c8-67b0-4201-9757-ba9190f0c9d1">
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	
+	ProductCode: payload."ItemCode",
+	Name: payload."Name",
+	Description: payload."ItemDescription",
+    IsActive:true
+}]]]></ee:set-payload>
+						</ee:message>
+						<ee:variables>
+						</ee:variables>
+					</ee:transform>
+					<salesforce:create doc:name="CreateProduct" doc:id="5d371b9d-b7eb-4f12-bff6-437138590dae" config-ref="Salesforce_Config" type="Product2" target="test"/>
+					<ee:transform doc:name="Transform Message" doc:id="c55dfa3c-372d-4cf9-9943-8d8c2016d82c" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<logger level="INFO" doc:name="Log Call Response" doc:id="33c8cac9-c9a3-460c-b8e3-f0ca4b43de8c" message="Log Upsert Product Result: #[payload]"/>
+				</when>
+				<otherwise>
+					<ee:transform doc:name="Populate Product code to id list" doc:id="f66ec602-d452-458d-8db8-1bacc0a2ac4d">
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+						</ee:message>
+						<ee:variables>
+						</ee:variables>
+					</ee:transform>
+				</otherwise>
+			</choice>
+			<logger level="INFO" doc:name="Log Pricebook id" doc:id="8120c0fd-1b57-4abd-b450-94a33404dc8d" message="#[payload]" />
+			<salesforce:query doc:name="Query Pricebookentry" doc:id="eb79100b-ab0f-4475-b8bf-b5db0f0dcb15" config-ref="Salesforce_Config" target="test">
+				<salesforce:salesforce-query>Select  Id, PriceBook2Id, Product2Id From PricebookEntry</salesforce:salesforce-query>
+			</salesforce:query>
+			<ee:transform doc:name="Transform Message" doc:id="0eadea29-3790-46ee-96bf-923b9e5ca563">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<logger level="INFO" doc:name="Log Pricebookentry" doc:id="601804a8-86d9-4720-8897-f2e3bfad9a9b" message="#[payload]" />
+			<choice doc:name="Does Pricebookentry exist?" doc:id="570e2fea-4cba-4654-9f70-ebdbf6e98c86">
+				<when expression="#[payload.sfdcPricebookentry == null]">
+					<ee:transform doc:name="Prepare Pricebookentry data" doc:id="4d2014a2-2cca-4db8-9125-b380ca03e43f">
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload map (items, index) ->
+{
+	Name:items.ProductName__c,
+	Product2Id:items.Product2Id,
+	Pricebook2Id:items.Pricebook2Id,
+	UnitPrice:items.UnitPrice,
+	IsActive:items.IsActive
+	
+}]]></ee:set-payload>
+						</ee:message>
+						<ee:variables>
+						</ee:variables>
+					</ee:transform>
+					<logger level="INFO" doc:name="Log Pricebookentry data" doc:id="5d77a6a2-a718-4a7a-9893-2d9f851527b4" message="#[payload]" />
+					<salesforce:create type="PricebookEntry" doc:name="Create Pricebookentry" doc:id="a25734f3-0df1-4761-85fe-0df0ead11dfd" config-ref="Salesforce_Config" target="test" />
+					<logger level="INFO" doc:name="Log call response" doc:id="63cb4a26-7dce-461e-956e-ab51dbbc1f17" message="Log Upsert Pricebook Result: #[payload]" />
+				</when>
+				<otherwise>
+					<ee:transform doc:name="Add Pricebookentry id to product" doc:id="30cc8917-38c7-4e98-8262-e2029e0ba6e8">
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+						</ee:message>
+						<ee:variables>
+						</ee:variables>
+					</ee:transform>
+				</otherwise>
+			</choice>
+			<ee:transform doc:name="Store sfdcProduct" doc:id="51759725-975a-4597-99e2-340df4802add">
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+				</ee:variables>
+			</ee:transform>
+		</foreach>
+		<logger level="INFO" doc:name="Log productCode2ProductIdList" doc:id="898d8ac9-1537-4a5a-a1f7-aaef970cec98" message="Succesfully created pricebook" />
+		<flow-ref doc:name="Calls Logging_SubFlow_EndLog" doc:id="4866a10e-36aa-41c1-8b1d-3454d95432c9" name="Logging_Subflow_EndLog"/>
+	</sub-flow>
+</mule>

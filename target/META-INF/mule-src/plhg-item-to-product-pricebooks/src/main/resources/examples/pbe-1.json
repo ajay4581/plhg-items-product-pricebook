@@ -1,0 +1,11 @@
+[
+    {
+    	 "Product2Id": "01t2y0000010VG8PM",
+        "Pricebook2Id": "01s2y000002ChWbAK",
+        "ProductName__c": "Steel",
+        "UnitPrice": "100",
+        "IsActive" : true
+       
+    }
+
+]
